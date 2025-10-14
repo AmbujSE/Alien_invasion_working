@@ -6,3 +6,4 @@ images/*.bmp
 key
 sshkey
 keyfile
+*.Identifier
