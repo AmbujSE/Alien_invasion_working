@@ -5,3 +5,4 @@ images/*.bmp
 *.pub
 key
 sshkey
+keyfile
