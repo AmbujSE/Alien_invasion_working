@@ -78,7 +78,7 @@ class AlienInvasion:
         # Create the full fleet
         for row_number in range(number_rows):
             for alien_number in range(number_aliens_x):
-                self.__create__alien(alien_number * 2 * alien_width,
+                self.__create__alien(alien_width + alien_number * 2 * alien_width,
                                     alien_height + 2 * alien_height * row_number)
 
     def __create__alien(self, x_position, y_position):
