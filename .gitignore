@@ -8,3 +8,4 @@ sshkey
 keyfile
 *.Identifier
 KEYS/
+highscore.txt
