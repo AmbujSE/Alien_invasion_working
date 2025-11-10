@@ -105,24 +105,58 @@ class AlienInvasion:
             self.ship.moving_left = False
     
     def _create_fleet(self):
-        """Create a full fleet of aliens."""
+        """Create a fleet of aliens with patterns based on current level."""
         alien = Alien(self)
         alien_width, alien_height = alien.rect.size
-        
-        # Determine how many aliens fit in a row and how many rows fit on screen
         available_space_x = self.settings.screen_width - (2 * alien_width)
-        number_aliens_x = available_space_x // (2 * alien_width)
-
         ship_height = self.ship.rect.height
+        
+        # Basic dimensions
+        number_aliens_x = available_space_x // (2 * alien_width)
         available_space_y = (self.settings.screen_height -
                             (3 * alien_height) - ship_height)
-        number_rows = available_space_y // (2 * alien_height)
-
-        # Create the full fleet
-        for row_number in range(number_rows):
-            for alien_number in range(number_aliens_x):
-                self.__create__alien(alien_width + alien_number * 2 * alien_width,
-                                    alien_height + 2 * alien_height * row_number)
+        max_rows = available_space_y // (2 * alien_height)
+        
+        # Choose formation based on level
+        level = self.stats.level
+        
+        if level <= 1:
+            # Basic rectangular formation for level 1
+            rows = min(3, max_rows)
+            for row in range(rows):
+                for alien_number in range(number_aliens_x):
+                    self.__create__alien(alien_width + alien_number * 2 * alien_width,
+                                      alien_height + 2 * alien_height * row)
+        
+        elif level <= 3:
+            # V-shaped formation
+            middle = number_aliens_x // 2
+            for row in range(min(5, max_rows)):
+                for col in range(number_aliens_x):
+                    if col >= middle - row and col <= middle + row:
+                        self.__create__alien(alien_width + col * 2 * alien_width,
+                                          alien_height + 2 * alien_height * row)
+        
+        elif level <= 5:
+            # Diamond formation
+            middle = number_aliens_x // 2
+            diamond_size = min(5, max_rows)
+            for row in range(diamond_size * 2 - 1):
+                distance = abs(row - (diamond_size - 1))
+                for col in range(number_aliens_x):
+                    if col >= middle - distance and col <= middle + distance:
+                        self.__create__alien(alien_width + col * 2 * alien_width,
+                                          alien_height + 2 * alien_height * row)
+        
+        else:
+            # Dense zigzag pattern for higher levels
+            rows = min(6, max_rows)
+            for row in range(rows):
+                offset = (alien_width if row % 2 == 0 else 0)
+                for alien_number in range(number_aliens_x - (1 if row % 2 == 0 else 0)):
+                    x = offset + alien_width + alien_number * 2 * alien_width
+                    y = alien_height + 2 * alien_height * row
+                    self.__create__alien(x, y)
 
     def __create__alien(self, x_position, y_position):
         """Create an alien and place it in the fleet."""
