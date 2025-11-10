@@ -55,6 +55,9 @@ class AlienInvasion:
         """Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.game_active:
+            # Hide the mouse cursor immediately when button is clicked
+            pygame.mouse.set_visible(False)
+            
             # Reset the game settings.
             self.settings.initialize_dynamic_settings()
         
@@ -62,6 +65,7 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.sb.prep_score()
             self.sb.prep_level()
+            self.sb.prep_ships()
             self.game_active = True
 
             #Get rid of any remaining aliens and bullets.
@@ -144,8 +148,9 @@ class AlienInvasion:
     def ship_hit(self):
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
-            # Decrement ships_left.
+            # Decrement ships_left, and update scoreboard.
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
                 # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
